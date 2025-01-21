@@ -1,0 +1,40 @@
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Preloader styles */
+
+#page-preloader {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f7f7f4;
+  transition: opacity 0.5s ease;
+  opacity: 1;
+  z-index: 9999;
+}
+
+#page-preloader svg {
+  transition: opacity 0.5s ease;
+}
+
+/* main default style */
+main {
+  opacity: 0;
+}
