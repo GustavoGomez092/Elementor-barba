@@ -1,9 +1,11 @@
 # Nesting House Theme
 
 ## Description
+
 Nesting House is a custom WordPress theme designed for use with Elementor. It provides a flexible and customizable foundation for building beautiful websites with ease.
 
 ## Features
+
 - Smooth scrolling with Lenis.js
 - Page transitions with Barba.js
 - Animations with GSAP and ScrollTrigger
@@ -19,18 +21,22 @@ Nesting House is a custom WordPress theme designed for use with Elementor. It pr
 - Translation-ready
 
 ## Requirements
+
 - WordPress 6.0 or higher
 - PHP 8.0 or higher
 
 ## Installation
+
 1. Download the theme files.
 2. Upload the theme folder to the `/wp-content/themes/` directory.
 3. Activate the theme through the 'Appearance > Themes' menu in WordPress.
 
 ## Customization
+
 This theme is designed to work seamlessly with Elementor. You can customize the theme using the Elementor page builder and the WordPress Customizer.
 
 ## File Structure
+
 - `assets/`: Contains CSS, JavaScript, and image assets.
 - `includes/`: Contains PHP files for theme functionality.
 - `template-parts/`: Contains template parts for the theme.
@@ -42,11 +48,15 @@ This theme is designed to work seamlessly with Elementor. You can customize the 
 - `readme.txt`: This file.
 
 ## Support
+
 For support, please visit the [GitHub repository](https://github.com/GustavoGomez092).
 
 ## License
+
 This theme is licensed under the MIT License. See the LICENSE file for more information.
+
 ## JavaScript Libraries
+
 This theme includes the following JavaScript libraries to enhance functionality and user experience:
 
 - **jQuery**: A fast, small, and feature-rich JavaScript library.
