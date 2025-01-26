@@ -1,3 +1,8 @@
+// When in elementor editor, avoid running the intro
+const body = document.querySelector("body");
+if (body.classList.contains("elementor-editor-active")) {
+window.sessionStorage.setItem("loaderAnimationPlayed", true);
+}
 // This function helps add and remove js and css files during a page transition
 function loadjscssfile(filename, filetype) {
   if (filetype == "js") {
@@ -46,10 +51,12 @@ barba.hooks.beforeEnter(({ current, next }) => {
       .map(link => link.href) // Get the href attribute of each <link> tag
 
       stylesheets.forEach((url) => {
+        if (url.includes("main")) return;
         if (url.includes("style")) return;
         if (url.includes("theme")) return;
-        if (url.includes("header-footer")) return;
-        if (url.includes("frontend")) return;
+        if (url.includes("widget-nav-menu")) return;
+        // if (url.includes("header-footer")) return;
+        // if (url.includes("frontend")) return;
         document.querySelector(`link[href='${url}']`).remove();
       });
 
@@ -58,10 +65,12 @@ barba.hooks.beforeEnter(({ current, next }) => {
       .map(link => link.href) // Get the href attribute of each <link> tag
 
       stylesheetsNext.forEach((url) => {
+        if (url.includes("main")) return;
         if (url.includes("style")) return;
         if (url.includes("theme")) return;
-        if (url.includes("header-footer")) return;
-        if (url.includes("frontend")) return;
+        if (url.includes("widget-nav-menu")) return;
+        // if (url.includes("header-footer")) return;
+        // if (url.includes("frontend")) return;
         loadjscssfile(url, "css");
       });
 
@@ -84,6 +93,11 @@ barba.hooks.beforeEnter(({ current, next }) => {
 });
 
 function enterAnimation(e) {
+  function remove_all_active_menu_items() {
+    jQuery("#site-header a").each(function(){
+      jQuery(this).removeClass('elementor-item-active');
+    });
+  }
   return new Promise(async (resolve) => {
     jQuery("a").each(function(){
       // make links not clickable if already on the same url taking into consideration relative and absolute paths
@@ -97,6 +111,8 @@ function enterAnimation(e) {
         if ( jQuery(this).attr('href').includes(subPage) ) {
           jQuery(this).click(function(event){
             event.preventDefault();
+            remove_all_active_menu_items();
+            jQuery(this).addClass('elementor-item-active');
           });
         }
       } else {
@@ -104,6 +120,8 @@ function enterAnimation(e) {
         if ( jQuery(this).attr('href').includes(subPage) ) {
           jQuery(this).click(function(event){
             event.preventDefault();
+            remove_all_active_menu_items();
+            jQuery(this).addClass('elementor-item-active');
           });
         }
       }
@@ -167,9 +185,7 @@ barba.init({
         enterAnimation(next.container)
       },
       leave: ({ current }) => leaveAnimation(current.container),
-      enter: ({ next }) => {
-      enterAnimation(next.container)
-    }
+      enter: ({ next }) => enterAnimation(next.container)
     },
   ],
 });

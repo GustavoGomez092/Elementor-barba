@@ -38,3 +38,7 @@ html.lenis body {
 main {
   opacity: 0;
 }
+
+.skip-link {
+  opacity: 0;
+}
