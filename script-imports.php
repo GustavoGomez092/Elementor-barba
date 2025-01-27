@@ -133,6 +133,22 @@ function scrollTo_js()
 add_action('wp_enqueue_scripts', 'scrollTo_js');
 
 /**
+ * Enqueue Page JS functionality.
+ *
+ * @return void
+ */
+
+function page_js()
+{
+
+  wp_register_script('page_js_script', get_template_directory_uri() . '/assets/js/page-functions.js', array('gsap_js_script', 'scrollTrigger_js_script'), '1.0', true);
+
+  wp_enqueue_script('page_js_script');
+}
+
+add_action('wp_enqueue_scripts', 'page_js');
+
+/**
  * Enqueue Page Transition script.
  *
  * @return void
@@ -141,7 +157,7 @@ add_action('wp_enqueue_scripts', 'scrollTo_js');
 function page_transition_js()
 {
 
-  wp_register_script('page_transition_js_script', get_template_directory_uri() . '/assets/js/page-transitions.js', array('jquery', 'lenis_js_script', 'barba_js_script', 'lottie_intro_script'), '1.0', true);
+  wp_register_script('page_transition_js_script', get_template_directory_uri() . '/assets/js/page-transitions.js', array('jquery', 'lenis_js_script', 'barba_js_script', 'lottie_intro_script', 'page_js_script'), '1.0', true);
 
   wp_enqueue_script('page_transition_js_script');
 }
