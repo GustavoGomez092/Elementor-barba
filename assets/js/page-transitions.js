@@ -210,6 +210,11 @@ barba.init({
     {
       sync: false,
       once: async ({ next }) => {
+        
+        gsap.set('#site-header', {
+          y: '-100%',
+          ease: 'power3.inOut',
+        })
         await loaderAnimation()
         return enterAnimation(next.container)
       },

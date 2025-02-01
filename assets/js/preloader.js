@@ -22,11 +22,11 @@
           document.querySelector("#page-preloader > svg").style.opacity = 0;
           setTimeout(() => {
             document.getElementById("page-preloader").style.opacity = 0;
-          }, 400);
+          }, 1000);
           setTimeout(() => {
             document.getElementById("page-preloader").style.display = "none";
             resolve();
-          }, 600);
+          }, 1100);
         });
         window.sessionStorage.setItem("loaderAnimationPlayed", true);
       }

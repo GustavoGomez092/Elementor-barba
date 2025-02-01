@@ -6,7 +6,7 @@ window.parallaxIds = []
 const parallax = (e) => {
   const newParallaxItems = jQuery(e).find('.parallax')
   // Check if the element exists
-  if (!newParallaxItems.length) return;
+  if (!newParallaxItems.length) return
   // Loop through all the elements with the class parallax
   newParallaxItems.each(function (index) {
     // Get Direction attribute
@@ -34,7 +34,7 @@ const parallax = (e) => {
             id: id,
             start: 'top top',
             end: 'bottom top',
-            scrub: 1,
+            scrub: 0.8,
             markers: false,
           },
         }
@@ -152,9 +152,125 @@ const fadeIn = (e) => {
   )
 }
 
+// Glare card effect
+const glareHover = (e) => {
+  const glowCard = jQuery(e).find('.glow-card > div')
+
+  if (!glowCard.length) return
+
+  // add a child div with class glare recursively
+  glowCard.each(function () {
+    const that = jQuery(this)
+    const imageCard = that.find('img')
+    
+    const glare = document.createElement('div')
+    glare.classList.add('glare')
+    this.appendChild(glare)
+    
+    let bounds
+    let lastShadowOffsetX = 0
+    let lastShadowOffsetY = 0
+    let lastShadowBlur = 0
+
+    function moveToMouse(el) {
+      const mouseX = el.clientX
+      const mouseY = el.clientY
+      const leftX = mouseX - bounds.x
+      const topY = mouseY - bounds.y
+      const center = {
+        x: leftX - bounds.width / 2,
+        y: topY - bounds.height / 2,
+      }
+
+      // Calculate the blur radius of the shadow based on the distance
+      // from the center of the card to the mouse pointer
+      const distance = Math.sqrt(center.x ** 2 + center.y ** 2)
+
+      const rotationX = center.y / 50
+      const rotationY = -center.x / 50
+
+      // Calculate shadow offset and blur based on rotation
+      const shadowOffsetX = -rotationY * 5 // left/right
+      const shadowOffsetY = rotationX * 5 // top/bottom
+      const shadowBlur = 20 + distance / 120 // Blur
+      //const shadowBlur = 22;
+
+      // Store last shadow positions
+      lastShadowOffsetX = shadowOffsetX
+      lastShadowOffsetY = shadowOffsetY
+      lastShadowBlur = shadowBlur
+
+      gsap.to(that[0], {
+        scale: 1.1,
+        rotationX: rotationX,
+        rotationY: rotationY,
+        transformPerspective: 500,
+        ease: 'power2.out',
+        boxShadow: `${shadowOffsetX}px ${shadowOffsetY}px ${shadowBlur}px 6px rgba(72, 65, 56, .4)`,
+      })
+
+      gsap.to(that.find('.glare').get(), {
+        autoAlpha: 1,
+        backgroundImage: `
+      radial-gradient(
+        circle at
+        ${center.x * 2 + bounds.width / 2}px
+        ${
+          center.y * 2 + bounds.height / 2
+        }px, rgba(255, 255, 255, 0.33), rgba(0, 0, 0, 0.06)
+      )
+    `,
+      })
+    }
+
+    imageCard.on('mouseenter', () => {
+      bounds = that[0].getBoundingClientRect()
+      document.addEventListener('mousemove', moveToMouse)
+      gsap.to(that[0], {
+        scale: 1.1,
+        rotationX: 0,
+        rotationY: 0,
+        duration: 0.6,
+      })
+    })
+
+    imageCard.on('mouseleave', () => {
+      document.removeEventListener('mousemove', moveToMouse)
+
+      // Animate the card back to its original state
+      gsap.to(that[0], {
+        scale: 1,
+        rotationX: 0,
+        rotationY: 0,
+        duration: 0.6,
+      })
+
+      // Animate the shadow back to the center and fade out
+      gsap.to(that[0], {
+        boxShadow: `${lastShadowOffsetX}px ${lastShadowOffsetY}px ${lastShadowBlur}px 0 rgba(72, 65, 56, .4)`,
+        duration: 0.3,
+        ease: 'power3.out',
+        onComplete: () => {
+          gsap.to(that[0], {
+            boxShadow: `0px 0px ${lastShadowBlur}px 0 rgba(0, 0, 0, .4)`,
+            duration: 1.2,
+          })
+        },
+      })
+
+      // Fade out the glare background image
+      gsap.to(that.find('.glare').get(), {
+        autoAlpha: 0,
+        duration: 0.6,
+      })
+    })
+  })
+}
+
 // Animator function that calls all the animation functions
 const animator = (e) => {
   fadeIn(e)
   parallax(e)
   levitate(e)
+  glareHover(e)
 }
