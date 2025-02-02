@@ -95,6 +95,22 @@ barba.hooks.beforeEnter(({ current, next }) => {
 })
 
 function enterAnimation(e) {
+  function removeDuplicateLottie() {
+    const lottieContainers = jQuery(e).find('.elementor-widget-container > div.e-lottie__container > div.e-lottie__animation')
+
+    // if any container has more than 1 svg remove the rest
+    lottieContainers.each(function (){
+      const svgs = jQuery(this).find('svg')
+      if (svgs.length > 1) {
+        svgs.each(function (index){
+          if (index > 0) {
+            jQuery(this).remove()
+          }
+        })
+      }
+    })
+  }
+
   function remove_all_active_menu_items() {
     jQuery('#site-header a').each(function () {
       jQuery(this).removeClass('elementor-item-active')
@@ -110,7 +126,7 @@ function enterAnimation(e) {
       // check if the link is an absolute path
       if (jQuery(this).attr('href').includes(websiteURL)) {
         // check if the link is the same as the current page
-        if (jQuery(this).attr('href').includes(subPage)) {
+        if (subPage && jQuery(this).attr('href').includes(subPage)) {
           jQuery(this).click(function (event) {
             event.preventDefault()
             remove_all_active_menu_items()
@@ -119,7 +135,7 @@ function enterAnimation(e) {
         }
       } else {
         // check if the link is the same as the current page
-        if (jQuery(this).attr('href').includes(subPage)) {
+        if (subPage && jQuery(this).attr('href').includes(subPage)) {
           jQuery(this).click(function (event) {
             event.preventDefault()
             remove_all_active_menu_items()
@@ -158,6 +174,7 @@ function enterAnimation(e) {
                 duration: 1,
                 ease: 'power3.inOut',
                 onStart: () => {
+                  removeDuplicateLottie()
                   ScrollTrigger.refresh()
                 },
               }
