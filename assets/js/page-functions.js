@@ -267,8 +267,61 @@ const glareHover = (e) => {
   })
 }
 
+// Function to add splitType effect on text
+const splitAnimate = (e) => {
+  const splitText = jQuery(e).find('.split-text')
+  if (!splitText.length) return
+
+  splitText.each(function () {
+    // if the element has class split-text-words then animate the text into words
+    if (jQuery(this).hasClass('split-text-words')) {
+
+      // get the text element with class elementor-heading-title inside the element
+      const text = jQuery(this).find('.elementor-heading-title')
+
+      // create a scrollTrigger ID and add it to the  parallaxIds array
+      let id = `split-text-${Date.now()}`
+      window.parallaxIds.push(id)
+
+      // Split the text into words
+      const splitted = new SplitType(text)
+
+      // Add overflow hidden to the line container
+      text.find('.line').css('overflow', 'hidden')
+
+      // animate words with GSAP and scrollTrigger
+      gsap.fromTo(
+        splitted.words,
+        {
+          y: '100%',
+        },
+        {
+          y: '0%',
+          duration: 1,
+          ease: 'power3.inOut',
+          id,
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: this,
+            scrub: true,
+            start: 'top-=200% center',
+            end: 'bottom+=200% center',
+          },
+        }
+      )
+
+    } else if (jQuery(this).hasClass('split-text-lines')) {
+      // if the element has class split-text-lines then animate the text into lines
+    } 
+    else {
+      // if not then animate the text into characters
+    }
+  })
+}
+
 // Animator function that calls all the animation functions
 const animator = (e) => {
+  splitAnimate(e)
   fadeIn(e)
   parallax(e)
   levitate(e)

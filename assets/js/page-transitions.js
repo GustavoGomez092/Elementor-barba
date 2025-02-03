@@ -41,9 +41,6 @@ barba.hooks.beforeEnter(({ current, next }) => {
         }
       } );
 
-      jQuery('.elementor-element').each(function () {
-        elementorFrontend.elementsHandler.runReadyTrigger(jQuery(this))
-      })
     }
   }
 
@@ -207,7 +204,7 @@ barba.init({
     {
       sync: false,
       once: async ({ next }) => {
-        
+        lenis.scrollTo('top')
         gsap.set('#site-header', {
           y: '-100%',
           ease: 'power3.inOut',

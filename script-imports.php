@@ -5,6 +5,20 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Enqueue SplitType script.
+ */
+
+function splitType_js()
+{
+
+  wp_register_script('splitType_js_script', get_template_directory_uri() . '/assets/js/splitType.js', array(), '1.0', true);
+
+  wp_enqueue_script('splitType_js_script');
+}
+
+add_action('wp_enqueue_scripts', 'splitType_js');
+
+/**
  * Enqueue Lottie.js script.
  */
 
