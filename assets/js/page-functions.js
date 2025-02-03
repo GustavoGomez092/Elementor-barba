@@ -1,8 +1,30 @@
-// Function to look for all the assets that will have parallax on the page
+
+// Debounce utitlity function
+const debounce = (func, delay) => {
+  let debounceTimer
+  return function () {
+      const context = this
+      const args = arguments
+      clearTimeout(debounceTimer)
+      debounceTimer
+          = setTimeout(() => func.apply(context, args), delay)
+  }
+}
 
 // Create an array to store the ID's of the ScrollTriggers
 window.parallaxIds = []
 
+// Create an array to store the resize observers
+window.resizeObservers = []
+
+// Function to remove all the resize observers
+const removeResizeObservers = () => {
+  window.resizeObservers.forEach((observer) => {
+    observer.disconnect()
+  })
+}
+
+// Function to look for all the assets that will have parallax on the page
 const parallax = (e) => {
   const newParallaxItems = jQuery(e).find('.parallax')
   // Check if the element exists
@@ -286,35 +308,186 @@ const splitAnimate = (e) => {
       // Split the text into words
       const splitted = new SplitType(text)
 
+      // Observe width changes to re-split the text
+      const resizeObserver = new ResizeObserver(debounce(() => {
+
+        // Split the text again
+        splitted.split()
+
+        // Release the previous scroll trigger
+        ScrollTrigger.getById(id).kill()
+
+        // Add overflow hidden to the line container
+        text.find('.line').css('overflow', 'hidden')
+
+        // animate words with GSAP and scrollTrigger
+        animation(splitted)
+
+        // Refresh the scrollTrigger
+        ScrollTrigger.refresh()
+      }, 300))
+
+      // Add the resize observer to the array
+      window.resizeObservers.push(resizeObserver)
+
+      // Observe the body for resize
+      resizeObserver.observe(document.body)
+
       // Add overflow hidden to the line container
       text.find('.line').css('overflow', 'hidden')
 
       // animate words with GSAP and scrollTrigger
-      gsap.fromTo(
-        splitted.words,
-        {
-          y: '100%',
-        },
-        {
-          y: '0%',
-          duration: 1,
-          ease: 'power3.inOut',
-          id,
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: this,
-            scrub: true,
-            start: 'top-=200% center',
-            end: 'bottom+=200% center',
+      const animation = (splitted) => {
+        gsap.fromTo(
+          splitted.words,
+          {
+            y: '100%',
           },
-        }
-      )
+          {
+            y: '0%',
+            duration: 1,
+            ease: 'power3.inOut',
+            id,
+            stagger: 0.1,
+            scrollTrigger: {
+              trigger: this,
+              scrub: true,
+              start: 'top-=200% center',
+              end: 'bottom+=200% center',
+            },
+          }
+        )
+      }
+
+      animation(splitted)
 
     } else if (jQuery(this).hasClass('split-text-lines')) {
       // if the element has class split-text-lines then animate the text into lines
+      const text = jQuery(this).find('.elementor-heading-title')
+
+      // create a scrollTrigger ID and add it to the  parallaxIds array
+      let id = `split-text-${Date.now()}`
+      window.parallaxIds.push(id)
+
+      // Split the text into lines
+      const splitted = new SplitType(text)
+
+      // Observe width changes to re-split the text
+      const resizeObserver = new ResizeObserver(debounce(() => {
+
+        // Split the text again
+        splitted.split()
+
+        // Release the previous scroll trigger
+        ScrollTrigger.getById(id).kill()
+
+        // Add overflow hidden to the line container
+        text.css('overflow', 'hidden')
+
+        // animate words with GSAP and scrollTrigger
+        animation(splitted)
+
+        // Refresh the scrollTrigger
+        ScrollTrigger.refresh()
+      }, 300))
+
+      // Add the resize observer to the array
+      window.resizeObservers.push(resizeObserver)
+
+      // Observe the body for resize
+      resizeObserver.observe(document.body)
+
+      // Add overflow hidden to the line container
+      text.css('overflow', 'hidden')
+
+      // animate words with GSAP and scrollTrigger
+      const animation = (splitted) => {
+        gsap.fromTo(
+          splitted.words,
+          {
+            y: '100%',
+          },
+          {
+            y: '0%',
+            duration: 1,
+            ease: 'power3.inOut',
+            id,
+            stagger: 0.1,
+            scrollTrigger: {
+              trigger: this,
+              scrub: true,
+              start: 'top-=200% center',
+              end: 'bottom+=200% center',
+            },
+          }
+        )
+      }
+
+      animation(splitted)
     } 
     else {
       // if not then animate the text into characters
+      const text = jQuery(this).find('.elementor-heading-title')
+
+      // create a scrollTrigger ID and add it to the  parallaxIds array
+      let id = `split-text-${Date.now()}`
+      window.parallaxIds.push(id)
+
+      // Split the text into characters
+      const splitted = new SplitType(text)
+
+            // Observe width changes to re-split the text
+            const resizeObserver = new ResizeObserver(debounce(() => {
+
+              // Split the text again
+              splitted.split()
+      
+              // Release the previous scroll trigger
+              ScrollTrigger.getById(id).kill()
+      
+              // Add overflow hidden to the line container
+              text.find('.line').css('overflow', 'hidden')
+      
+              // animate words with GSAP and scrollTrigger
+              animation(splitted)
+      
+              // Refresh the scrollTrigger
+              ScrollTrigger.refresh()
+            }, 300))
+      
+            // Add the resize observer to the array
+            window.resizeObservers.push(resizeObserver)
+      
+            // Observe the body for resize
+            resizeObserver.observe(document.body)
+      
+            // Add overflow hidden to the line container
+            text.find('.line').css('overflow', 'hidden')
+      
+            // animate words with GSAP and scrollTrigger
+            const animation = (splitted) => {
+              gsap.fromTo(
+                splitted.words,
+                {
+                  y: '100%',
+                },
+                {
+                  y: '0%',
+                  duration: 1,
+                  ease: 'power3.inOut',
+                  id,
+                  stagger: 0.1,
+                  scrollTrigger: {
+                    trigger: this,
+                    scrub: true,
+                    start: 'top-=200% center',
+                    end: 'bottom+=200% center',
+                  },
+                }
+              )
+            }
+      
+            animation(splitted)
     }
   })
 }

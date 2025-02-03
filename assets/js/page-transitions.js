@@ -60,6 +60,9 @@ barba.hooks.beforeEnter(({ current, next }) => {
 barba.hooks.beforeLeave(() => {
   // Remove all the ScrollTriggers
   removeParallax()
+
+  // Remove all ResizeObservers
+  removeResizeObservers()
 })
 
 barba.hooks.after((data) => {
