@@ -1,34 +1,6 @@
-// When in elementor editor, avoid running the intro
-const body = document.querySelector('body')
-if (body.classList.contains('elementor-editor-active')) {
-  window.sessionStorage.setItem('loaderAnimationPlayed', true)
-}
 // This function helps add and remove js and css files during a page transition
-function loadjscssfile(filename, filetype) {
-  if (filetype == 'js') {
-    //if filename is a external JavaScript file
-    const existingScript = document.querySelector('script[src="${filename}"]')
-    if (existingScript) {
-      existingScript.remove()
-    }
-    var fileref = document.createElement('script')
-    fileref.setAttribute('type', 'text/javascript')
-    fileref.setAttribute('src', filename)
-  } else if (filetype == 'css') {
-    //if filename is an external CSS file
-    const existingCSS = document.querySelector(`link[href='${filename}']`)
-    if (existingCSS) {
-      existingCSS.remove()
-    }
-    var fileref = document.createElement('link')
-    fileref.setAttribute('rel', 'stylesheet')
-    fileref.setAttribute('type', 'text/css')
-    fileref.setAttribute('href', filename)
-  }
-  if (typeof fileref != 'undefined') {
-    document.getElementsByTagName('head')[0].appendChild(fileref)
-  }
-}
+const elementExistsInArray = ( element, array ) =>
+	array.some( ( el ) => el.isEqualNode( element ) );
 
 barba.hooks.beforeEnter(({ current, next }) => {
   // Set <body> classes for the 'next' page
@@ -45,35 +17,29 @@ barba.hooks.beforeEnter(({ current, next }) => {
     jQuery('body').attr('class', bodyClasses)
 
     if (bodyClasses.includes('elementor-page')) {
-      // Remove all stylesheets on current DOM
-      const stylesheets = Array.from(
-        document.querySelectorAll('link[rel="stylesheet"]')
-      ).map((link) => link.href) // Get the href attribute of each <link> tag
 
-      stylesheets.forEach((url) => {
-        if (url.includes('main')) return
-        if (url.includes('style')) return
-        if (url.includes('theme')) return
-        if (url.includes('widget-nav-menu')) return
-        // if (url.includes("header-footer")) return;
-        // if (url.includes("frontend")) return;
-        document.querySelector(`link[href='${url}']`).remove()
-      })
+      // get the next elements
+      const nextElement = new DOMParser().parseFromString(
+        next.html,
+        'text/html'
+      );
 
-      // Add all stylesheets from the next page
-      const stylesheetsNext = Array.from(
-        jQuery(response).filter("link[rel='stylesheet']")
-      ).map((link) => link.href) // Get the href attribute of each <link> tag
+      const newHeadElements = [ ...nextElement.head.children ];
+      const currentHeadElements = [ ...document.head.children ];
 
-      stylesheetsNext.forEach((url) => {
-        if (url.includes('main')) return
-        if (url.includes('style')) return
-        if (url.includes('theme')) return
-        if (url.includes('widget-nav-menu')) return
-        // if (url.includes("header-footer")) return;
-        // if (url.includes("frontend")) return;
-        loadjscssfile(url, 'css')
-      })
+      // Add new elements that are not in the current head
+      newHeadElements.forEach( ( newEl ) => {
+        if ( ! elementExistsInArray( newEl, currentHeadElements ) ) {
+          document.head.appendChild( newEl.cloneNode( true ) );
+        }
+      } );
+
+      // Remove old elements that are not in the new head
+      currentHeadElements.forEach( ( currentEl ) => {
+        if ( ! elementExistsInArray( currentEl, newHeadElements ) ) {
+          document.head.removeChild( currentEl );
+        }
+      } );
 
       jQuery('.elementor-element').each(function () {
         elementorFrontend.elementsHandler.runReadyTrigger(jQuery(this))
@@ -93,6 +59,21 @@ barba.hooks.beforeEnter(({ current, next }) => {
     elementorFrontend.init()
   }
 })
+
+barba.hooks.beforeLeave(() => {
+  // Remove all the ScrollTriggers
+  removeParallax()
+})
+
+barba.hooks.after((data) => {
+  // Reevaluate all inline JavaScript with no ID attribute
+  let js = data.next.container.querySelectorAll('script:not([id])');
+  if(js != null){
+          js.forEach((item) => {
+              eval(item.innerHTML);
+          });
+  }
+});
 
 function enterAnimation(e) {
   function removeDuplicateLottie() {
@@ -209,7 +190,6 @@ function leaveAnimation(e) {
           duration: 1,
           ease: 'power3.inOut',
           onStart: () => {
-            removeParallax()
             lenis.scrollTo('top')
           },
         }
