@@ -86,7 +86,8 @@ function enterAnimation(e) {
       const websiteURL = window.backend_data.site_info.site_url
 
       // check if the link is an absolute path
-      if (jQuery(this).attr('href').includes(websiteURL)) {
+      console.log(jQuery(this).attr('href').split('/'))
+      if (jQuery(this).attr('href').includes(websiteURL) &&  jQuery(this).attr('href').split('/').length <= 5) {
         // check if the link is the same as the current page
         if (subPage && jQuery(this).attr('href').includes(subPage)) {
           jQuery(this).addClass('elementor-item-active')
@@ -98,7 +99,7 @@ function enterAnimation(e) {
         }
       } else {
         // check if the link is the same as the current page
-        if (subPage && jQuery(this).attr('href').split('/')[1]?.includes(subPage)) {
+        if (subPage && jQuery(this).attr('href').split('/')[1]?.includes(subPage) && jQuery(this).attr('href').split('/').length <= 5) {
           jQuery(this).addClass('elementor-item-active')
           jQuery(this).addClass('current-menu-item')
           jQuery(this).addClass('current_page_item')
