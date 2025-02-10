@@ -173,9 +173,6 @@ function leaveAnimation(e) {
           display: 'none',
           duration: 1,
           ease: 'power3.inOut',
-          onStart: () => {
-            lenis.scrollTo('top')
-          },
         }
       )
       .then(() => {
