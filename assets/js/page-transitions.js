@@ -2,6 +2,7 @@
 const elementExistsInArray = ( element, array ) =>
 	array.some( ( el ) => el.isEqualNode( element ) );
 
+
 barba.hooks.beforeEnter(({ current, next }) => {
   // Set <body> classes for the 'next' page
   if (current.container) {
@@ -76,36 +77,33 @@ barba.hooks.after((data) => {
 });
 
 function enterAnimation(e) {
-
-  function remove_all_active_menu_items() {
-    jQuery('#site-header a').each(function () {
-      jQuery(this).removeClass('elementor-item-active')
-    })
-  }
   return new Promise(async (resolve) => {
     jQuery('a').each(function () {
       // make links not clickable if already on the same url taking into consideration relative and absolute paths
+      // This whole thing needs to be revised and optimized, I'm sure this code is really brittle
       // get the sub page from url
-      const subPage = window.location.pathname.split('/').pop()
+      const subPage = window.location.pathname.split('/')[1]
       const websiteURL = window.backend_data.site_info.site_url
 
       // check if the link is an absolute path
       if (jQuery(this).attr('href').includes(websiteURL)) {
         // check if the link is the same as the current page
         if (subPage && jQuery(this).attr('href').includes(subPage)) {
+          jQuery(this).addClass('elementor-item-active')
+          jQuery(this).addClass('current-menu-item')
+          jQuery(this).addClass('current_page_item')
           jQuery(this).click(function (event) {
             event.preventDefault()
-            remove_all_active_menu_items()
-            jQuery(this).addClass('elementor-item-active')
           })
         }
       } else {
         // check if the link is the same as the current page
-        if (subPage && jQuery(this).attr('href').includes(subPage)) {
+        if (subPage && jQuery(this).attr('href').split('/')[1]?.includes(subPage)) {
+          jQuery(this).addClass('elementor-item-active')
+          jQuery(this).addClass('current-menu-item')
+          jQuery(this).addClass('current_page_item')
           jQuery(this).click(function (event) {
             event.preventDefault()
-            remove_all_active_menu_items()
-            jQuery(this).addClass('elementor-item-active')
           })
         }
       }
@@ -154,7 +152,21 @@ function enterAnimation(e) {
 }
 
 function leaveAnimation(e) {
+  function remove_all_active_menu_items() {
+    jQuery('li').each(function () {
+      jQuery(this).removeClass('elementor-item-active')
+      jQuery(this).removeClass('current-menu-item')
+      jQuery(this).removeClass('current_page_item')
+    })
+    jQuery('li > a').each(function () {
+      jQuery(this).removeClass('elementor-item-active')
+      jQuery(this).removeClass('current-menu-item')
+      jQuery(this).removeClass('current_page_item')
+    })
+  }
+
   return new Promise(async (resolve) => {
+    remove_all_active_menu_items()
     // slide menu up
     gsap.to('#site-header', {
       duration: 0.5,
@@ -188,7 +200,6 @@ barba.init({
     {
       sync: false,
       once: async ({ next }) => {
-        lenis.scrollTo('top')
         gsap.set('#site-header', {
           y: '-100%',
           ease: 'power3.inOut',

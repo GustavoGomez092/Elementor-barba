@@ -66,3 +66,11 @@ html.lenis body {
   top: 0;
   pointer-events: none;
 }
+
+.elementor-item-active,
+.elementor-item-active .elementor-icon-list-icon svg,
+.elementor-item-active .elementor-icon-list-text {
+  pointer-events: none;
+  color: #65b0d7 !important;
+  fill: #65b0d7 !important;
+}
