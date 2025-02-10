@@ -14,29 +14,29 @@ while (have_posts()):
   the_post();
   ?>
 
-  <main data-barba="container" data-barba-namespace="<?php echo $post_slug; ?>" <?php post_class('site-main'); ?>>
+<main <?php post_class('site-main'); ?>>
 
-    <?php if (apply_filters('hello_elementor_page_title', true)): ?>
-      <div class="page-header">
-        <?php the_title('<h1 class="entry-title">', '</h1>'); ?>
-      </div>
-    <?php endif; ?>
+  <?php if (apply_filters('hello_elementor_page_title', true)): ?>
+  <div class="page-header">
+    <?php the_title('<h1 class="entry-title">', '</h1>'); ?>
+  </div>
+  <?php endif; ?>
 
-    <div class="page-content">
-      <?php the_content(); ?>
+  <div class="page-content">
+    <?php the_content(); ?>
 
-      <?php wp_link_pages(); ?>
+    <?php wp_link_pages(); ?>
 
-      <?php if (has_tag()): ?>
-        <div class="post-tags">
-          <?php the_tags('<span class="tag-links">' . esc_html__('Tagged ', 'hello-elementor'), ', ', '</span>'); ?>
-        </div>
-      <?php endif; ?>
+    <?php if (has_tag()): ?>
+    <div class="post-tags">
+      <?php the_tags('<span class="tag-links">' . esc_html__('Tagged ', 'hello-elementor'), ', ', '</span>'); ?>
     </div>
+    <?php endif; ?>
+  </div>
 
-    <?php comments_template(); ?>
+  <?php comments_template(); ?>
 
 
 
-    <?php
+  <?php
 endwhile;

@@ -76,21 +76,6 @@ barba.hooks.after((data) => {
 });
 
 function enterAnimation(e) {
-  function removeDuplicateLottie() {
-    const lottieContainers = jQuery(e).find('.elementor-widget-container > div.e-lottie__container > div.e-lottie__animation')
-
-    // if any container has more than 1 svg remove the rest
-    lottieContainers.each(function (){
-      const svgs = jQuery(this).find('svg')
-      if (svgs.length > 1) {
-        svgs.each(function (index){
-          if (index > 0) {
-            jQuery(this).remove()
-          }
-        })
-      }
-    })
-  }
 
   function remove_all_active_menu_items() {
     jQuery('#site-header a').each(function () {
@@ -155,7 +140,6 @@ function enterAnimation(e) {
                 duration: 1,
                 ease: 'power3.inOut',
                 onStart: () => {
-                  removeDuplicateLottie()
                   ScrollTrigger.refresh()
                 },
               }
