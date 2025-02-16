@@ -86,7 +86,6 @@ function enterAnimation(e) {
       const websiteURL = window.backend_data.site_info.site_url
 
       // check if the link is an absolute path
-      console.log(jQuery(this).attr('href').split('/'))
       if (jQuery(this).attr('href').includes(websiteURL) &&  jQuery(this).attr('href').split('/').length <= 5) {
         // check if the link is the same as the current page
         if (subPage && jQuery(this).attr('href').includes(subPage)) {
