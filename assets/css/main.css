@@ -71,6 +71,6 @@ html.lenis body {
 .elementor-item-active .elementor-icon-list-icon svg,
 .elementor-item-active .elementor-icon-list-text {
   pointer-events: none;
-  color: #65b0d7 !important;
-  fill: #65b0d7 !important;
+  color: #65b0d7;
+  fill: #65b0d7;
 }
