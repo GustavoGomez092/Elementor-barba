@@ -2,6 +2,38 @@
 const elementExistsInArray = ( element, array ) =>
 	array.some( ( el ) => el.isEqualNode( element ) );
 
+// Re-execute all inline scripts
+function executeInlineScripts(container) {
+  const elementorElements = [
+    'script#elementor-js',
+    'script#elementor-pro-js',
+    'script#elementor-frontend-js',
+    'script#elementor-frontend-js-before',
+    'script#elementor-frontend-js-after',
+    'script#elementor-frontend-js-before-legacy',
+    'script#elementor-frontend-js-after-legacy',
+    'script#elementor-frontend-js-before-vendors',
+    'script#elementor-frontend-js-after-vendors',
+    'script#elementor-frontend-js-before-legacy',
+    'script#elementor-frontend-js-after-legacy',
+    'script#imagesloaded-js',
+    'script#swiper-js',
+    'script#elementor-gallery-js',
+  ]
+  let scripts = container.body.querySelectorAll(elementorElements.join(','));
+  scripts.forEach((script) => {
+    let newScript = document.createElement("script");
+    if (script.src) {
+      newScript.src = script.src;
+      newScript.async = true;
+    } else {
+      newScript.textContent = script.textContent;
+    }
+
+    document.body.appendChild(newScript);
+    script.remove(); // Remove old script to avoid duplication
+  });
+}
 
 barba.hooks.beforeEnter(({ current, next }) => {
   // Set <body> classes for the 'next' page
@@ -28,6 +60,7 @@ barba.hooks.beforeEnter(({ current, next }) => {
       const newHeadElements = [ ...nextElement.head.children ];
       const currentHeadElements = [ ...document.head.children ];
 
+
       // Add new elements that are not in the current head
       newHeadElements.forEach( ( newEl ) => {
         if ( ! elementExistsInArray( newEl, currentHeadElements ) ) {
@@ -41,6 +74,9 @@ barba.hooks.beforeEnter(({ current, next }) => {
           document.head.removeChild( currentEl );
         }
       } );
+
+      // Re-execute Elementor inline scripts
+      executeInlineScripts(nextElement);
 
     }
   }
@@ -58,6 +94,7 @@ barba.hooks.beforeEnter(({ current, next }) => {
   }
 })
 
+
 barba.hooks.beforeLeave(() => {
   // Remove all the ScrollTriggers
   removeParallax()
@@ -71,7 +108,7 @@ barba.hooks.after((data) => {
   let js = data.next.container.querySelectorAll('script:not([id])');
   if(js != null){
           js.forEach((item) => {
-              eval(item.innerHTML);
+              eval(item?.innerHTML);
           });
   }
 });
