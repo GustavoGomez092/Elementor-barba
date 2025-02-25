@@ -91,9 +91,13 @@ barba.hooks.beforeEnter(({ current, next }) => {
   // Reinitialize Elementor and menu widget
   if (current.container) {
     elementorFrontend.init()
-    jQuery('[data-widget_type="nav-menu.default"]').each(function() {
+    jQuery('[data-widget_type="nav-menu.default"], [data-widget_type="gallery.default"]').each(function() {
       elementorFrontend.elementsHandler.runReadyTrigger( jQuery( this ) );
     });
+    // Check if the function lazyloadRunObserver is defined
+    if (typeof lazyloadRunObserver !== 'undefined') {
+      lazyloadRunObserver()
+    }
   }
 })
 
