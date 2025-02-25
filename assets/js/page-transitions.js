@@ -77,7 +77,6 @@ barba.hooks.beforeEnter(({ current, next }) => {
 
       // Re-execute Elementor inline scripts
       executeInlineScripts(nextElement);
-
     }
   }
 
@@ -88,9 +87,13 @@ barba.hooks.beforeEnter(({ current, next }) => {
       video.play()
     })
   }
-
+  
+  // Reinitialize Elementor and menu widget
   if (current.container) {
     elementorFrontend.init()
+    jQuery('[data-widget_type="nav-menu.default"]').each(function() {
+      elementorFrontend.elementsHandler.runReadyTrigger( jQuery( this ) );
+    });
   }
 })
 
@@ -108,7 +111,7 @@ barba.hooks.after((data) => {
   let js = data.next.container.querySelectorAll('script:not([id])');
   if(js != null){
           js.forEach((item) => {
-              eval(item?.innerHTML);
+            eval(item?.innerHTML);
           });
   }
 });
